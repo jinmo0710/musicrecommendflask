@@ -25,6 +25,7 @@ def recommend():
     
     # 한국 곡만 검색
     if genre.lower() == 'k-pop':
+        query = f"{mood} genre:k-pop"
         results_kr = sp.search(q=query, limit=25, type='track', market='KR')
         recommended_songs_kr = [{'title': track['name'], 'artist': track['artists'][0]['name'], 'url': track['external_urls']['spotify']} for track in results_kr['tracks']['items']]
         random.shuffle(recommended_songs_kr)
@@ -45,6 +46,7 @@ def recommend():
         selected_songs = unique_songs[:10]
     
     return jsonify({'songs': selected_songs})
+
 
 
 if __name__ == '__main__':
