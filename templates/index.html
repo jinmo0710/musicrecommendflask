@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>음악 추천 서비스</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" crossorigin="anonymous">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #2c3e50; /* 무드 있는 어두운 배경색 */
+            color: #ecf0f1;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #34495e; /* 헤더 색상 */
+            color: white;
+            padding: 20px 0;
+            font-size: 36px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        h1 {
+            margin: 20px 0;
+            font-size: 48px; /* 큰 글씨 크기 */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            min-height: 80vh;
+            padding: 10px; /* 모바일에서 패딩 추가 */
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap; /* 모바일에서 버튼 줄바꿈 */
+        }
+        .emoji-button {
+            background: none;
+            border: none;
+            font-size: 72px; /* 큰 이모지 크기 */
+            margin: 0 20px;
+            cursor: pointer;
+            transition: transform 0.3s;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .emoji-button:hover {
+            transform: scale(1.2);
+        }
+        .emoji-label {
+            font-size: 18px; /* 작은 글씨 크기 */
+            margin-top: 10px;
+            color: white;
+        }
+        #recommend-button {
+            background-color: #1abc9c;
+            border: none;
+            padding: 15px 30px;
+            font-size: 24px;
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            margin-top: 20px;
+        }
+        #recommend-button:hover {
+            background-color: #16a085;
+            transform: scale(1.1);
+        }
+        form, #playlist {
+            margin: 20px;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            display: inline-block;
+            width: 100%; /* 모바일에서 너비 조정 */
+            max-width: 600px; /* 최대 너비 설정 */
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            color: #ecf0f1;
+        }
+        .copy-icon {
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        .copy-message {
+            display: none;
+            background-color: #1abc9c;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-size: 16px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        @media screen and (max-width: 768px) {
+            header {
+                font-size: 28px; /* 모바일에서 헤더 글씨 크기 조정 */
+            }
+            h1 {
+                font-size: 36px; /* 모바일에서 큰 글씨 크기 조정 */
+            }
+            .emoji-button {
+                font-size: 48px; /* 모바일에서 이모지 크기 조정 */
+                margin: 0 10px;
+            }
+            .emoji-label {
+                font-size: 14px; /* 모바일에서 작은 글씨 크기 조정 */
+            }
+            #recommend-button {
+                padding: 10px 20px; /* 모바일에서 버튼 패딩 조정 */
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        음악 추천 서비스
+    </header>
+    <div class="container">
+        <h1 id="mood-title">기분이 어떤가요?</h1>
+        <div class="button-container" id="mood-buttons">
+            <button class="emoji-button" onclick="selectMood('happy')">
+                😊
+                <span class="emoji-label">행복해요</span>
+            </button>
+            <button class="emoji-button" onclick="selectMood('sad')">
+                😢
+                <span class="emoji-label">슬퍼요</span>
+            </button>
+            <button class="emoji-button" onclick="selectMood('energetic')">
+                💪
+                <span class="emoji-label">에너지가 넘쳐요</span>
+            </button>
+            <button class="emoji-button" onclick="selectMood('calm')">
+                😌
+                <span class="emoji-label">편안해요</span>
+            </button>
+        </div>
+
+        <div id="genre-section" style="display: none;">
+            <h1 id="genre-title">좋아하는 장르를 선택하세요.</h1>
+            <div class="button-container">
+                <button class="emoji-button" onclick="selectGenre('pop')">
+                    🎵
+                    <span class="emoji-label">팝</span>
+                </button>
+                <button class="emoji-button" onclick="selectGenre('rock')">
+                    🎸
+                    <span class="emoji-label">록</span>
+                </button>
+                <button class="emoji-button" onclick="selectGenre('jazz')">
+                    🎷
+                    <span class="emoji-label">재즈</span>
+                </button>
+                <button class="emoji-button" onclick="selectGenre('classic')">
+                    🎻
+                    <span class="emoji-label">클래식</span>
+                </button>
+                <button class="emoji-button" onclick="selectGenre('indie')">
+                    🎧
+                    <span class="emoji-label">인디</span>
+                </button>
+            </div>
+            <button type="button" id="recommend-button" style="display: none;" onclick="submitForm()">🎶 추천</button>
+        </div>
+
+        <div id="playlist" style="display: none;">
+            <h1>추천 플레이리스트</h1>
+            <ul id="playlist-songs"></ul>
+            <div id="copy-message" class="copy-message">복사되었습니다</div>
+        </div>
+    </div>
+
+    <script>
+        let selectedMood = '';
+        let selectedGenre = '';
+
+        function selectMood(mood) {
+            selectedMood = mood;
+            document.getElementById('mood-buttons').style.display = 'none';
+            document.getElementById('mood-title').style.display = 'none';
+            document.getElementById('genre-section').style.display = 'block';
+        }
+
+        function selectGenre(genre) {
+            selectedGenre = genre;
+            document.getElementById('recommend-button').style.display = 'block';
+        }
+
+        function submitForm() {
+            fetch('/recommend', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ mood: selectedMood, genre: selectedGenre }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);  // 디버깅을 위한 출력
+                document.getElementById('genre-section').style.display = 'none';
+                const playlist = document.getElementById('playlist');
+                playlist.style.display = 'block';
+                const playlistSongs = document.getElementById('playlist-songs');
+                playlistSongs.innerHTML = '';
+                data.songs.forEach(song => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `${song.title} by ${song.artist} <i class="fa-regular fa-copy copy-icon" onclick="copyToClipboard('${song.url}')"></i>`;
+                    playlistSongs.appendChild(li);
+                });
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function copyToClipboard(url) {
+            const textarea = document.createElement('textarea');
+            textarea.value = url;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+
+            const copyMessage = document.getElementById('copy-message');
+            copyMessage.style.display = 'block';
+            setTimeout(() => {
+                copyMessage.style.display = 'none';
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
