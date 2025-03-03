@@ -22,19 +22,19 @@ def recommend():
     genre = content['genre']
     
     query = f"{mood} {genre}"
-    results_us = sp.search(q=query, limit=25, type='track', market='US')
-    recommended_songs_us = [{'title': track['name'], 'artist': track['artists'][0]['name'], 'url': track['external_urls']['spotify']} for track in results_us['tracks']['items']]
-    
-    results_kr = sp.search(q=query, limit=25, type='track', market='KR')
+    results_kr = sp.search(q=query, limit=15, type='track', market='KR')
     recommended_songs_kr = [{'title': track['name'], 'artist': track['artists'][0]['name'], 'url': track['external_urls']['spotify']} for track in results_kr['tracks']['items']]
     
-    recommended_songs = recommended_songs_us + recommended_songs_kr
+    results_us = sp.search(q=query, limit=10, type='track', market='US')
+    recommended_songs_us = [{'title': track['name'], 'artist': track['artists'][0]['name'], 'url': track['external_urls']['spotify']} for track in results_us['tracks']['items']]
+    
+    recommended_songs = recommended_songs_kr + recommended_songs_us
     random.shuffle(recommended_songs)
     selected_songs = recommended_songs[:10]
     
     return jsonify({'songs': selected_songs})
 
-import os
+
 
 if __name__ == '__main__':
     port = int(os.getenv("PORT", 5000))  # Render가 제공하는 PORT 사용
