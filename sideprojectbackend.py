@@ -28,13 +28,15 @@ def recommend():
     results_us = sp.search(q=query, limit=10, type='track', market='US')
     recommended_songs_us = [{'title': track['name'], 'artist': track['artists'][0]['name'], 'url': track['external_urls']['spotify']} for track in results_us['tracks']['items']]
     
-    recommended_songs = recommended_songs_kr + recommended_songs_us
-    random.shuffle(recommended_songs)
-    selected_songs = recommended_songs[:10]
+    # 중복 제거
+    combined_songs = recommended_songs_kr + recommended_songs_us
+    unique_songs = {song['url']: song for song in combined_songs}.values()
+    unique_songs = list(unique_songs)
+    
+    random.shuffle(unique_songs)
+    selected_songs = unique_songs[:10]
     
     return jsonify({'songs': selected_songs})
-
-
 
 if __name__ == '__main__':
     port = int(os.getenv("PORT", 5000))  # Render가 제공하는 PORT 사용
