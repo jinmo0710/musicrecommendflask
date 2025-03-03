@@ -27,7 +27,7 @@ def recommend():
     recommended_songs_kr = [{'title': track['name'], 'artist': track['artists'][0]['name'], 'url': track['external_urls']['spotify']} for track in results_kr['tracks']['items']]
 
     
-        results_us = sp.search(q=query, limit=10, type='track', market='US')
+    results_us = sp.search(q=query, limit=10, type='track', market='US')
     recommended_songs_us = [{'title': track['name'], 'artist': track['artists'][0]['name'], 'url': track['external_urls']['spotify']} for track in results_us['tracks']['items']]
     
     # 중복 제거
